@@ -1,46 +1,43 @@
 import requests
 import json
+import re
 from bs4 import BeautifulSoup
 
-# Taylor-Reputation id看不出任何规律
-'''song_id = ['503207093', '516823324', '516827355', '516823325', '516818336', '501133611',
-           '516827356', '514235010', '516818337', '516818338', '516823326', '516827357',
-           '516819321', '516776413', '516823327']'''
-# Taylor-1989 有三首歌和其他的不一样，看不出来是因为先发行（eg. 6）还是因为啥
-# song_id = ['29561031', '29498911', '29561033'] #1,4,6
-# range(29572501,29572516)
+# 输入网易云音乐album_id，可任意改成自己喜欢专辑的id
+album_id = 36709029
 
-# Taylor-RED 出乎意料的全部有规律！
-# range(25787215,25787236)```
-# RADWIMPS-your name
-# range(426881480,426881506)
+# 根据album_id 从专辑页面获取所有歌曲的song_ids
+session = requests.Session()
+url = 'https://music.163.com/album?id=' + str(album_id)
+s = session.get(url)
+soup = BeautifulSoup(s.text, 'html.parser')
 
-# Ed Sheeran-divide 4 rebels
-song_id = ['460112985', '460112986', '460298206', '460112987']
-# range(460043699,460043711)
+getJSON = soup.select("#song-list-pre-cache textarea")[0].contents[0]
 
+json_data = json.loads(getJSON)
+with open("./json/reputation.json", 'w', encoding='utf-8') as json_file:
+    json.dump(json_data, json_file, ensure_ascii=False)
 
-for i in range(0, 4):
-    url = 'http://music.163.com/api/song/lyric?' + 'id=' + str(song_id[i]) + '&lv=1&kv=1&tv=-1'
+# 爬取下来的是一个json对象，里面是多个json组成的数组，查看每个元素的key
+# print(json_data[0].keys())
+
+# 将每首歌id整合成数组song_ids，用于后面爬取所有歌的歌词。
+song_ids = []
+for item in json_data:
+    #print(type(item['id']))
+    id = item['id']
+    song_ids.append(id)
+
+# 得到所有song id之后，循环打印每首歌曲页面的歌词
+for song_id in song_ids:
+    url = 'http://music.163.com/api/song/lyric?' + 'id=' + str(song_id) + '&lv=1&kv=1&tv=-1'
     r = requests.get(url)
     json_obj = r.text
     j = json.loads(json_obj)
-    print(j['lrc']['lyric'])
-    print(i)
+    lyric = j['lrc']['lyric']
+    pat = re.compile(r'\[.*\]')
+    lyric = re.sub(pat,"",lyric)
+    print(lyric.strip())
+    print(song_id)
 
-for i in range(460043699, 460043711):
-    url = 'http://music.163.com/api/song/lyric?' + 'id=' + str(i) + '&lv=1&kv=1&tv=-1'
-    r = requests.get(url)
-    json_obj = r.text
-    j1 = json.loads(json_obj)
-    print(j1['lrc']['lyric'])
-    print(i)
-
-# not used but stiil put here
-'''content = r.text
-soup = BeautifulSoup(r.text,'lxml')
-
-lyric1 = soup.find_all(div_ = 'lyric-content').get_text()
-lyric2 = soup.find_all(div_ = 'flag_more').get_text()
-
-print(lyric1)'''
+#以及谢谢阳神的支持。
