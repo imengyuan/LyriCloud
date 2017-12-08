@@ -13,5 +13,9 @@ json_data = json.loads(getJSON)
 with open("./json/reputation.json", 'w', encoding='utf-8') as json_file:
     json.dump(json_data, json_file, ensure_ascii=False)
 
+# 爬取下来的是一个json对象，里面是多个json组成的数组，查看每个元素的key。
+print(json_data[0].keys())
+
+# 打印每首歌曲的id和name。
 for item in json_data:
     print("id = ", item['id'], ", name = ", item['name'])
