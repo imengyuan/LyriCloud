@@ -1,5 +1,5 @@
 # Lyricloud
-Use python to crawl lyrics automatically from a whole playlist at [NetEase](https://music.163.com/) , and use [WordArt](https://wordart.com/)  to generate lyric cloud.
+Use python3 to crawl lyrics automatically from a whole playlist at [NetEase](https://music.163.com/) , and use [WordArt](https://wordart.com/)  to generate lyric cloud.
 
 Thank [WangYang-wy](https://github.com/WangYang-wy) for his commits and great support.
 

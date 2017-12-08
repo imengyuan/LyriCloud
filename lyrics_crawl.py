@@ -24,7 +24,7 @@ with open("./json/reputation.json", 'w', encoding='utf-8') as json_file:
 # 将每首歌id整合成数组song_ids，用于后面爬取所有歌的歌词。
 song_ids = []
 for item in json_data:
-    #print(type(item['id']))
+    # print(type(item['id']))
     id = item['id']
     song_ids.append(id)
 
@@ -36,8 +36,8 @@ for song_id in song_ids:
     j = json.loads(json_obj)
     lyric = j['lrc']['lyric']
     pat = re.compile(r'\[.*\]')
-    lyric = re.sub(pat,"",lyric)
+    lyric = re.sub(pat, "", lyric)
     print(lyric.strip())
     print(song_id)
 
-#以及谢谢阳神的支持。
+# 以及谢谢阳神的支持。
