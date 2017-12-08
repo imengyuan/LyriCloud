@@ -15,11 +15,10 @@ j = json.loads(getJSON)
 # 查看JSON文件。
 # print(j)
 
-for i in j:
-    print(i['name'])
-    print(i['id'])
-    print(i)
-#
+model = j  # 数据
+with open("./json/reputation.json", 'w', encoding='utf-8') as json_file:
+    json.dump(model, json_file, ensure_ascii=False)
+
 # # print(soup)
 #
 #
